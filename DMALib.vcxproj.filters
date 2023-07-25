@@ -61,14 +61,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="leechcore.dll" />
-    <None Include="vmm.dll" />
+    <None Include="libs\leechcore.dll" />
+    <None Include="libs\vmm.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="vmm.lib" />
-    <Library Include="leechcore.lib" />
+    <Library Include="libs\vmm.lib" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="FTD3XX.dll" />
+    <CopyFileToFolders Include="libs\FTD3XX.dll" />
+    <CopyFileToFolders Include="libs\leechcore.lib" />
   </ItemGroup>
 </Project>

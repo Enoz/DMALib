@@ -157,23 +157,23 @@
     <ClCompile Include="includes\DMAMemoryManagement\VmmManager\VmmManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="FTD3XX.dll">
+    <CopyFileToFolders Include="libs\FTD3XX.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="leechcore.dll">
+    <CopyFileToFolders Include="libs\leechcore.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="vmm.dll">
+    <CopyFileToFolders Include="libs\vmm.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="leechcore.lib">
+    <CopyFileToFolders Include="libs\leechcore.lib">
       <FileType>Document</FileType>
-    </Library>
-    <Library Include="vmm.lib">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="libs\vmm.lib">
       <FileType>Document</FileType>
-    </Library>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
