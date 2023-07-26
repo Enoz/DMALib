@@ -65,10 +65,10 @@
     <None Include="libs\vmm.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="libs\leechcore.lib" />
     <Library Include="libs\vmm.lib" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="libs\FTD3XX.dll" />
-    <CopyFileToFolders Include="libs\leechcore.lib" />
   </ItemGroup>
 </Project>

@@ -168,12 +168,8 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="libs\leechcore.lib">
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="libs\vmm.lib">
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
+    <Library Include="libs\leechcore.lib" />
+    <Library Include="libs\vmm.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
