@@ -63,7 +63,7 @@ void DMARender::Commander::drawOverlayHandler()
         auto selectedMonitor = pIO.Monitors[monitor_current_idx];
         ImGui::SetNextWindowSize(ImVec2(selectedMonitor.MainSize.x, selectedMonitor.MainSize.y));
         ImGui::SetNextWindowPos((ImVec2(selectedMonitor.MainPos.x, selectedMonitor.MainPos.y)));
-        ImGui::Begin("ESP Overlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoCollapse);
+        ImGui::Begin("ESP Overlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
         this->adapter->getOverlay()->DrawOverlay();
         ImGui::End();
     }
