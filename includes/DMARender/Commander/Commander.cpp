@@ -1,12 +1,15 @@
 #include "Commander.h"
 
-void DMARender::initializeWindow()
+std::map<HWND, DMARender::Commander*> DMARender::hwndMap = std::map<HWND, DMARender::Commander*>();
+
+void DMARender::Commander::initializeWindow()
 {
     // Create application window
 //ImGui_ImplWin32_EnableDpiAwareness();
-    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
+    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, DMARender::WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
     ::RegisterClassExW(&wc);
     HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui DirectX11 Example", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+    DMARender::hwndMap[hwnd] = this;
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -177,7 +180,7 @@ void DMARender::initializeWindow()
 }
 
 // Helper functions
-bool DMARender::CreateDeviceD3D(HWND hWnd)
+bool DMARender::Commander::CreateDeviceD3D(HWND hWnd)
 {
     // Setup swap chain
     DXGI_SWAP_CHAIN_DESC sd;
@@ -210,7 +213,7 @@ bool DMARender::CreateDeviceD3D(HWND hWnd)
     return true;
 }
 
-void DMARender::CleanupDeviceD3D()
+void DMARender::Commander::CleanupDeviceD3D()
 {
     CleanupRenderTarget();
     if (g_pSwapChain) { g_pSwapChain->Release(); g_pSwapChain = nullptr; }
@@ -218,7 +221,7 @@ void DMARender::CleanupDeviceD3D()
     if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = nullptr; }
 }
 
-void DMARender::CreateRenderTarget()
+void DMARender::Commander::CreateRenderTarget()
 {
     ID3D11Texture2D* pBackBuffer;
     g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
@@ -226,7 +229,7 @@ void DMARender::CreateRenderTarget()
     pBackBuffer->Release();
 }
 
-void DMARender::CleanupRenderTarget()
+void DMARender::Commander::CleanupRenderTarget()
 {
     if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
 }
@@ -251,11 +254,14 @@ LRESULT WINAPI DMARender::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
     switch (msg)
     {
     case WM_SIZE:
+    {
         if (wParam == SIZE_MINIMIZED)
             return 0;
-        g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
-        g_ResizeHeight = (UINT)HIWORD(lParam);
+        Commander* cmdPtr = DMARender::hwndMap[hWnd];
+        cmdPtr->g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
+        cmdPtr->g_ResizeHeight = (UINT)HIWORD(lParam);
         return 0;
+    }
     case WM_SYSCOMMAND:
         if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
             return 0;
