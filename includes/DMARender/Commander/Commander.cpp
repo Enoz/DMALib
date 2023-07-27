@@ -135,6 +135,11 @@ void DMARender::initializeWindow()
         if (show_another_window)
         {
             ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            
+            auto pDraw = ImGui::GetWindowDrawList();
+            auto p = ImGui::GetCursorScreenPos();
+            pDraw->AddRectFilled(ImVec2(p.x + 10, p.y + 10), ImVec2(p.x + 200, p.y + 200), IM_COL32(255, 0, 0, 255));
+
             ImGui::Text("Hello from another window!");
             if (ImGui::Button("Close Me"))
                 show_another_window = false;

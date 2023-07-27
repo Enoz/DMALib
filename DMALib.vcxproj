@@ -167,6 +167,9 @@
     <ClInclude Include="includes\DMAMemoryManagement\VmmManager\VmmManager.h" />
     <ClInclude Include="includes\DMARender\Commander\Commander.h" />
     <ClInclude Include="includes\DMARender\includes.h" />
+    <ClInclude Include="includes\DMARender\IOverlay\IOverlay.h" />
+    <ClInclude Include="includes\DMARender\Vectors\Vector2.h" />
+    <ClInclude Include="includes\DMARender\Vectors\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DMALib.cpp" />
@@ -183,6 +186,8 @@
     <ClCompile Include="includes\DMAMemoryManagement\Utils\Utils.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\VmmManager\VmmManager.cpp" />
     <ClCompile Include="includes\DMARender\Commander\Commander.cpp" />
+    <ClCompile Include="includes\DMARender\IOverlay\IOverlay.cpp" />
+    <ClCompile Include="includes\DMARender\Vectors\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="libs\FTD3XX.dll">
