@@ -170,6 +170,7 @@
     <ClInclude Include="includes\DMARender\Commander\Commander.h" />
     <ClInclude Include="includes\DMARender\includes.h" />
     <ClInclude Include="includes\DMARender\IOverlay\IOverlay.h" />
+    <ClInclude Include="includes\DMARender\Utils\Utils.h" />
     <ClInclude Include="includes\DMARender\Vectors\Vector2.h" />
     <ClInclude Include="includes\DMARender\Vectors\Vector3.h" />
   </ItemGroup>
@@ -190,6 +191,7 @@
     <ClCompile Include="includes\DMARender\Commander\Adapter\CommanderAdapter.cpp" />
     <ClCompile Include="includes\DMARender\Commander\Commander.cpp" />
     <ClCompile Include="includes\DMARender\IOverlay\IOverlay.cpp" />
+    <ClCompile Include="includes\DMARender\Utils\Utils.cpp" />
     <ClCompile Include="includes\DMARender\Vectors\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>

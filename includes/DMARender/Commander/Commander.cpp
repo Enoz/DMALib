@@ -250,7 +250,6 @@ void DMARender::Commander::initializeWindow()
     CleanupDeviceD3D();
     ::DestroyWindow(hwnd);
     ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
     return;
 }
 
