@@ -5,6 +5,7 @@
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <tchar.h>
+#include <string>
 #ifdef _DEBUG
 #define DX12_ENABLE_DEBUG_LAYER
 #endif

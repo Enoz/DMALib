@@ -26,7 +26,7 @@ void DMARender::initializeWindow()
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
     //io.ConfigViewportsNoAutoMerge = true;
     //io.ConfigViewportsNoTaskBarIcon = true;
@@ -104,6 +104,8 @@ void DMARender::initializeWindow()
 
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
+
+
             ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
             ImGui::Checkbox("Another Window", &show_another_window);
@@ -124,9 +126,18 @@ void DMARender::initializeWindow()
         if (show_another_window)
         {
             ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
+
+
+            //ImGui::Text("Hello from another window!");
+            //if (ImGui::Button("Close Me"))
+            //    show_another_window = false;
+
+            auto pDrawList = ImGui::GetWindowDrawList();
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+
+            pDrawList->AddRect(ImVec2(p.x + 10, p.y + 10), ImVec2(p.x + 100, p.y + 100), ImColor(255, 0, 0));
+            pDrawList->AddText(ImVec2(p.x + 10, p.y + 10), ImColor(255, 0, 0), std::to_string(p.x).c_str());
+
             ImGui::End();
         }
 
