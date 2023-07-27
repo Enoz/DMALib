@@ -113,6 +113,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)imgui;$(ProjectDir)imgui\backends;$(ProjectDir)imgui\misc\cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -165,6 +166,7 @@
     <ClInclude Include="includes\DMAMemoryManagement\StaticManager\StaticManager.h" />
     <ClInclude Include="includes\DMAMemoryManagement\Utils\Utils.h" />
     <ClInclude Include="includes\DMAMemoryManagement\VmmManager\VmmManager.h" />
+    <ClInclude Include="includes\DMARender\Commander\Adapter\CommanderAdapter.h" />
     <ClInclude Include="includes\DMARender\Commander\Commander.h" />
     <ClInclude Include="includes\DMARender\includes.h" />
     <ClInclude Include="includes\DMARender\IOverlay\IOverlay.h" />
@@ -185,6 +187,7 @@
     <ClCompile Include="includes\DMAMemoryManagement\StaticManager\StaticManager.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\Utils\Utils.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\VmmManager\VmmManager.cpp" />
+    <ClCompile Include="includes\DMARender\Commander\Adapter\CommanderAdapter.cpp" />
     <ClCompile Include="includes\DMARender\Commander\Commander.cpp" />
     <ClCompile Include="includes\DMARender\IOverlay\IOverlay.cpp" />
     <ClCompile Include="includes\DMARender\Vectors\Vector3.cpp" />

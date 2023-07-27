@@ -2,13 +2,81 @@
 
 std::map<HWND, DMARender::Commander*> DMARender::hwndMap = std::map<HWND, DMARender::Commander*>();
 
+void DMARender::Commander::drawOverlayHandler()
+{
+    static bool identifyWindows = false;
+    static bool overlayEnabled = false;
+    auto pIO = ImGui::GetPlatformIO();
+    static int monitor_current_idx = 0;
+    ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
+    ImGui::Begin("Overlay Handler", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
+    if (overlayEnabled) {
+        auto io = ImGui::GetIO();
+        ImGui::Text("FPS: %.1f FPS", io.Framerate);
+        if (ImGui::Button("Disable Overlay"))
+            overlayEnabled = false;
+    }
+    else {
+        ImGui::Checkbox("Identify Windows", &identifyWindows);
+        std::string comboPreview = std::format("Window {}", monitor_current_idx);
+
+        if (ImGui::BeginCombo("Overlay Monitor", comboPreview.c_str())) {
+            for (int i = 0; i < pIO.Monitors.size(); i++) {
+                auto pMonitor = pIO.Monitors[i];
+                const bool isSelected = (monitor_current_idx == i);
+                auto monitorName = std::format("Monitor {}", i);
+                if (ImGui::Selectable(monitorName.c_str(), isSelected)) {
+                    monitor_current_idx = i;
+                }
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        ImGui::Text("Selected Resolution: %.0fx%.0f", pIO.Monitors[monitor_current_idx].MainSize.x, pIO.Monitors[monitor_current_idx].MainSize.y);
+        if (ImGui::Button("Begin Overlay")) {
+            overlayEnabled = true;
+            identifyWindows = false;
+        }
+    }
+    ImGui::End();
+
+    if (identifyWindows) {
+        for (int i = 0; i < pIO.Monitors.size(); i++) {
+            auto pMonitor = pIO.Monitors[i];
+            ImGui::SetNextWindowPos(ImVec2(pMonitor.MainPos.x + 40, pMonitor.MainPos.y + 40));
+            ImGui::SetNextWindowSize(ImVec2(150, 250));
+            auto windowName = std::format("{}", i);
+            ImGui::Begin(windowName.c_str(), nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoTitleBar);
+
+            auto drawList = ImGui::GetWindowDrawList();
+            auto p = ImGui::GetCursorScreenPos();
+
+            ImGui::PushFont(windowIdentifyFont);
+            drawList->AddText(ImGui::GetFont(), ImGui::GetFontSize(), ImVec2(p.x, p.y), IM_COL32(255, 0, 0, 255), windowName.c_str());
+            ImGui::PopFont();
+            ImGui::End();
+        }
+    }
+
+    if (overlayEnabled) {
+        auto selectedMonitor = pIO.Monitors[monitor_current_idx];
+        ImGui::SetNextWindowSize(ImVec2(selectedMonitor.MainSize.x, selectedMonitor.MainSize.y));
+        ImGui::SetNextWindowPos((ImVec2(selectedMonitor.MainPos.x, selectedMonitor.MainPos.y)));
+        ImGui::Begin("ESP Overlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoCollapse);
+        this->adapter->getOverlay()->DrawOverlay();
+        ImGui::End();
+    }
+}
+
 void DMARender::Commander::initializeWindow()
 {
     // Create application window
-//ImGui_ImplWin32_EnableDpiAwareness();
+    //ImGui_ImplWin32_EnableDpiAwareness();
+
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, DMARender::WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
     ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui DirectX11 Example", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"DMA Commander", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
     DMARender::hwndMap[hwnd] = this;
 
     // Initialize Direct3D
@@ -26,10 +94,11 @@ void DMARender::Commander::initializeWindow()
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    CreateFonts();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
     //io.ConfigViewportsNoAutoMerge = true;
     //io.ConfigViewportsNoTaskBarIcon = true;
@@ -107,47 +176,53 @@ void DMARender::Commander::initializeWindow()
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        {
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
+        if (this->adapter != nullptr) {
+            if (this->adapter->getOverlay() != nullptr) {
+                drawOverlayHandler();
+            }
         }
 
-        // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            
-            auto pDraw = ImGui::GetWindowDrawList();
-            auto p = ImGui::GetCursorScreenPos();
-            pDraw->AddRectFilled(ImVec2(p.x + 10, p.y + 10), ImVec2(p.x + 200, p.y + 200), IM_COL32(255, 0, 0, 255));
+        //// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        //if (show_demo_window)
+        //    ImGui::ShowDemoWindow(&show_demo_window);
 
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
+        //// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+        //{
+        //    static float f = 0.0f;
+        //    static int counter = 0;
+
+        //    ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+        //    ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+        //    ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+        //    ImGui::Checkbox("Another Window", &show_another_window);
+
+        //    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        //    ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+        //    if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+        //        counter++;
+        //    ImGui::SameLine();
+        //    ImGui::Text("counter = %d", counter);
+
+        //    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+        //    ImGui::End();
+        //}
+
+        //// 3. Show another simple window.
+        //if (show_another_window)
+        //{
+        //    ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        //    
+        //    auto pDraw = ImGui::GetWindowDrawList();
+        //    auto p = ImGui::GetCursorScreenPos();
+        //    pDraw->AddRectFilled(ImVec2(p.x + 10, p.y + 10), ImVec2(p.x + 200, p.y + 200), IM_COL32(255, 0, 0, 255));
+
+        //    ImGui::Text("Hello from another window!");
+        //    if (ImGui::Button("Close Me"))
+        //        show_another_window = false;
+        //    ImGui::End();
+        //}
 
         // Rendering
         ImGui::Render();
@@ -177,6 +252,11 @@ void DMARender::Commander::initializeWindow()
     ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
     return;
+}
+
+void DMARender::Commander::registerAdapter(std::shared_ptr<CommanderAdapter> adapter)
+{
+    this->adapter = adapter;
 }
 
 // Helper functions
@@ -232,6 +312,16 @@ void DMARender::Commander::CreateRenderTarget()
 void DMARender::Commander::CleanupRenderTarget()
 {
     if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
+}
+
+void DMARender::Commander::CreateFonts()
+{
+    ImGui::GetIO().Fonts->AddFontDefault();
+    ImFontConfig config;
+    config.OversampleH = 2;
+    config.OversampleV = 1;
+    config.GlyphExtraSpacing.x = 1.0f;
+    windowIdentifyFont = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 256, &config);
 }
 
 #ifndef WM_DPICHANGED

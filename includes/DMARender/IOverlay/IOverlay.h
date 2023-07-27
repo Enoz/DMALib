@@ -1,8 +1,9 @@
 #pragma once
-class IOverlay
-{
+namespace DMARender {
+	struct IOverlay
+	{
+		virtual void DrawOverlay() = 0;
+	};
+}
 
-public:
-	virtual void DrawOverlay() = 0;
-};
 
