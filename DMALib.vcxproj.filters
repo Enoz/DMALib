@@ -87,7 +87,7 @@
     <ClInclude Include="includes\DMARender\Commander\Adapter\CommanderAdapter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="includes\DMARender\Utils\Utils.h">
+    <ClInclude Include="includes\DMARender\Utils\RenderUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -143,7 +143,7 @@
     <ClCompile Include="includes\DMARender\Commander\Adapter\CommanderAdapter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="includes\DMARender\Utils\Utils.cpp">
+    <ClCompile Include="includes\DMARender\Utils\RenderUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
