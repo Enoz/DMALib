@@ -76,7 +76,7 @@ void DMARender::Commander::initializeWindow()
 
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, DMARender::WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
     ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"DMA Commander", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"DMA Commander",  WS_OVERLAPPEDWINDOW , 0, 0, 1280, 720, nullptr, nullptr, wc.hInstance, nullptr);
     DMARender::hwndMap[hwnd] = this;
 
     // Initialize Direct3D
@@ -238,8 +238,8 @@ void DMARender::Commander::initializeWindow()
             ImGui::RenderPlatformWindowsDefault();
         }
 
-        g_pSwapChain->Present(1, 0); // Present with vsync
-        //g_pSwapChain->Present(0, 0); // Present without vsync
+        //g_pSwapChain->Present(1, 0); // Present with vsync
+        g_pSwapChain->Present(0, 0); // Present without vsync
     }
 
     // Cleanup
@@ -347,8 +347,8 @@ LRESULT WINAPI DMARender::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
         if (wParam == SIZE_MINIMIZED)
             return 0;
         Commander* cmdPtr = DMARender::hwndMap[hWnd];
-        cmdPtr->g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
-        cmdPtr->g_ResizeHeight = (UINT)HIWORD(lParam);
+        //cmdPtr->g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
+        //cmdPtr->g_ResizeHeight = (UINT)HIWORD(lParam);
         return 0;
     }
     case WM_SYSCOMMAND:
