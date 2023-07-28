@@ -45,5 +45,6 @@ void DMARender::Utils::drawFilledCircle(const Vector2& point, const float& radiu
 void DMARender::Utils::drawText(const std::string& text, const Vector2& point, const float& size, const ImU32& color) {
 	auto drawList = ImGui::GetWindowDrawList();
 	auto p = ImGui::GetCursorScreenPos();
-	drawList->AddText(ImVec2(p.x + point.x, p.y + point.y), color, text.c_str());
+	drawList->AddText(ImGui::GetFont(), size, ImVec2(p.x + point.x, p.y + point.y), color, text.c_str());
+
 }

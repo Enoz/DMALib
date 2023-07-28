@@ -69,6 +69,11 @@ void DMARender::Commander::drawOverlayHandler()
     }
 }
 
+DMARender::Commander::Commander()
+{
+    this->registerAdapter(std::shared_ptr<CommanderAdapter>(new CommanderAdapter));
+}
+
 void DMARender::Commander::initializeWindow()
 {
     // Create application window
@@ -95,6 +100,7 @@ void DMARender::Commander::initializeWindow()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     CreateFonts();
+    this->adapter->createFonts();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -251,6 +257,11 @@ void DMARender::Commander::initializeWindow()
     ::DestroyWindow(hwnd);
     ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
     return;
+}
+
+std::shared_ptr<DMARender::CommanderAdapter> DMARender::Commander::getAdapter()
+{
+    return this->adapter;
 }
 
 void DMARender::Commander::registerAdapter(std::shared_ptr<CommanderAdapter> adapter)

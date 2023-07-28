@@ -37,10 +37,12 @@ namespace DMARender {
         void drawOverlayHandler();
 
     public:
+        Commander();
         UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
         void initializeWindow();
         
         //Registrations
+        std::shared_ptr<CommanderAdapter> getAdapter();
         void registerAdapter(std::shared_ptr<CommanderAdapter> adapter);
     };
 

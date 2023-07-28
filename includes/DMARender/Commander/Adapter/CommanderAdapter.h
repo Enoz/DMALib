@@ -6,6 +6,7 @@ namespace DMARender {
 		std::shared_ptr<IOverlay> overlayPtr = nullptr;
 
 	public:
+		void createFonts();
 		virtual void miscDraw() {};
 
 		void setOverlay(std::shared_ptr<IOverlay> ptr);
