@@ -48,3 +48,13 @@ void DMARender::Utils::drawText(const std::string& text, const Vector2& point, c
 	drawList->AddText(ImGui::GetFont(), size, ImVec2(p.x + point.x, p.y + point.y), color, text.c_str());
 
 }
+
+void DMARender::Utils::drawTextList(const std::vector<std::string>& strings, const Vector2& pos, const float& size, const ImU32& color) {
+	int offsetCounter = 0;
+	auto drawList = ImGui::GetWindowDrawList();
+	auto p = ImGui::GetCursorScreenPos();
+	for (const std::string& str : strings) {
+		drawList->AddText(ImGui::GetFont(), size, ImVec2(p.x + pos.x, p.y + pos.y + offsetCounter), color, str.c_str());
+		offsetCounter += size;
+	}
+}

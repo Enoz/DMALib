@@ -11,5 +11,6 @@ namespace DMARender {
 		void drawBoundingBox(const Vector2& top, const Vector2& bottom, float width, const ImU32& color);
 		void drawFilledCircle(const Vector2& point, const float& radius, const ImU32& color);
 		void drawText(const std::string& text, const Vector2& point, const float& size, const ImU32& color);
+		void drawTextList(const std::vector<std::string>& strings, const Vector2& pos, const float& size, const ImU32& color);
 	}
 }
