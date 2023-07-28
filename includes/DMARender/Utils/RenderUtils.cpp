@@ -25,17 +25,15 @@ void DMARender::Utils::drawBoundingBox(const Vector2& top, const Vector2& bottom
 	auto drawList = ImGui::GetWindowDrawList();
 	auto p = ImGui::GetCursorScreenPos();
 
-	std::vector<ImVec2> lineOrder {
-		ImVec2(p.x + top.x + width / 2, p.y + top.y),
+	ImVec2 tmpLineOrder[5] = {
+			ImVec2(p.x + top.x + width / 2, p.y + top.y),
 			ImVec2(p.x + bottom.x + width / 2, p.y + bottom.y),
 			ImVec2(p.x + bottom.x - width / 2, p.y + bottom.y),
 			ImVec2(p.x + top.x - width / 2, p.y + top.y),
 			ImVec2(p.x + top.x + width / 2, p.y + top.y)
 	};
 
-	for (int i = 0; i < lineOrder.size() - 1; i++) {
-		drawList->AddLine(lineOrder[i], lineOrder[i + 1], color);
-	}
+	drawList->AddPolyline(tmpLineOrder, 5, color, 0, 1);
 }
 
 void DMARender::Utils::drawFilledCircle(const Vector2& point, const float& radius, const ImU32& color) {
