@@ -358,8 +358,8 @@ LRESULT WINAPI DMARender::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
         if (wParam == SIZE_MINIMIZED)
             return 0;
         Commander* cmdPtr = DMARender::hwndMap[hWnd];
-        //cmdPtr->g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
-        //cmdPtr->g_ResizeHeight = (UINT)HIWORD(lParam);
+        cmdPtr->g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
+        cmdPtr->g_ResizeHeight = (UINT)HIWORD(lParam);
         return 0;
     }
     case WM_SYSCOMMAND:
