@@ -71,12 +71,15 @@ void DMARender::RenderWindow::drawOverlayHandler()
 
 void DMARender::RenderWindow::drawMapHandler()
 {
-    
+
     //Map Selection
     auto maps = bridge->getMapManager()->getMaps();
     if (maps.size() == 0)
         return;
     static int map_current_index = 0;
+    static float dragOffsetX = 0;
+    static float dragOffsetY = 0;
+    static float mapZoom = 1;
     ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
     if (bridge->getMapManager()->isMapSelected()) {
         if (ImGui::Button("Stop Radar"))
@@ -105,12 +108,43 @@ void DMARender::RenderWindow::drawMapHandler()
     auto allocator = bridge->getMapManager()->getSelectedAllocator();
     if (!gameMap || !allocator)
         return;
+
+    auto mousePos = ImGui::GetMousePos();
+    static float lastMousePosX = mousePos.x;
+    static float lastMousePosY = mousePos.y;
+
+    if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && !ImGui::GetIO().WantCaptureMouse) {
+
+        dragOffsetX += mousePos.x - lastMousePosX;
+        dragOffsetY += mousePos.y - lastMousePosY;
+    }
+    if (ImGui::GetIO().MouseWheel != 0.0f) {
+        mapZoom += ImGui::GetIO().MouseWheel * .01;
+        if (mapZoom < 0.01)
+            mapZoom = 0.01;
+    }
+
+    lastMousePosX = mousePos.x;
+    lastMousePosY = mousePos.y;
+
+
+
     ImDrawList* fgDrawList = ImGui::GetBackgroundDrawList();
     auto sP = ImGui::GetCursorScreenPos();
     RECT rect;
     GetWindowRect(hwnd, &rect);
-        
-    fgDrawList->AddImage(allocator->getImage(), ImVec2(rect.left, rect.top), ImVec2(rect.left + 1000, rect.top + 1000));
+    allocator->getWidth() * mapZoom;
+    fgDrawList->AddImage(
+        allocator->getImage(),
+        ImVec2(
+            rect.left + dragOffsetX,
+            rect.top + dragOffsetY
+        ),
+        ImVec2(
+            rect.left + dragOffsetX + (allocator->getWidth() * mapZoom),
+            rect.top + dragOffsetY + (allocator->getHeight() * mapZoom)
+        )
+    );
     
 }
 
