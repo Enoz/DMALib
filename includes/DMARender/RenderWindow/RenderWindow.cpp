@@ -77,9 +77,7 @@ void DMARender::RenderWindow::drawMapHandler()
     if (maps.size() == 0)
         return;
     static int map_current_index = 0;
-    static float dragOffsetX = 0;
-    static float dragOffsetY = 0;
-    static float mapZoom = -1;
+    static MapTransform mTrans = MapTransform();
     ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
     if (bridge->getMapManager()->isMapSelected()) {
         if (ImGui::Button("Stop Radar"))
@@ -97,9 +95,9 @@ void DMARender::RenderWindow::drawMapHandler()
             ImGui::EndCombo();
         }
         if (ImGui::Button("Start Radar")) {
-            mapZoom = -1;
-            dragOffsetX = 0;
-            dragOffsetY = 0;
+            mTrans.mapZoom = -1;
+            mTrans.dragOffsetX = 0;
+            mTrans.dragOffsetY = 0;
             bridge->getMapManager()->selectMap(map_current_index);
         }
 
@@ -118,10 +116,12 @@ void DMARender::RenderWindow::drawMapHandler()
     GetWindowRect(hwnd, &rect);
 
 
-    if (mapZoom < 0) {
+    if (mTrans.mapZoom < 0) {
         float mapSize = fmaxf(allocator->getWidth(), allocator->getHeight());
         float screenSize = fminf(rect.right - rect.left, rect.bottom - rect.top);
-        mapZoom = screenSize / mapSize;
+        mTrans.mapZoom = screenSize / mapSize;
+        mTrans.mapHeight = allocator->getHeight();
+        mTrans.mapWidth = allocator->getWidth();
     }
 
     auto mousePos = ImGui::GetMousePos();
@@ -129,25 +129,25 @@ void DMARender::RenderWindow::drawMapHandler()
     static float lastMousePosY = mousePos.y;
 
     if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && !ImGui::GetIO().WantCaptureMouse) {
-        dragOffsetX += mousePos.x - lastMousePosX;
-        dragOffsetY += mousePos.y - lastMousePosY;
+        mTrans.dragOffsetX += mousePos.x - lastMousePosX;
+        mTrans.dragOffsetY += mousePos.y - lastMousePosY;
     }
     if (ImGui::GetIO().MouseWheel != 0.0f) {
-        float oldZoom = mapZoom;
+        float oldZoom = mTrans.mapZoom;
         //Zoom in/out
-        mapZoom += ImGui::GetIO().MouseWheel * .01;
-        if (mapZoom < 0.01)
-            mapZoom = 0.01;
+        mTrans.mapZoom += ImGui::GetIO().MouseWheel * .01;
+        if (mTrans.mapZoom < 0.01)
+            mTrans.mapZoom = 0.01;
 
         //Zoom toward cursor
-        float deltaX = (allocator->getWidth() * oldZoom) - (allocator->getWidth() * mapZoom);
-        float deltaY = (allocator->getHeight() * oldZoom) - (allocator->getHeight() * mapZoom);
+        float deltaX = (allocator->getWidth() * oldZoom) - (allocator->getWidth() * mTrans.mapZoom);
+        float deltaY = (allocator->getHeight() * oldZoom) - (allocator->getHeight() * mTrans.mapZoom);
 
-        float percX = (mousePos.x - rect.left - dragOffsetX) / ((allocator->getWidth() * mapZoom));
-        float percY = (mousePos.y - rect.top - dragOffsetY) / ((allocator->getHeight() * mapZoom));
+        float percX = (mousePos.x - rect.left - mTrans.dragOffsetX) / ((allocator->getWidth() * mTrans.mapZoom));
+        float percY = (mousePos.y - rect.top - mTrans.dragOffsetY) / ((allocator->getHeight() * mTrans.mapZoom));
 
-        dragOffsetX += (deltaX * percX);
-        dragOffsetY += (deltaY * percY);
+        mTrans.dragOffsetX += (deltaX * percX);
+        mTrans.dragOffsetY += (deltaY * percY);
     }
 
     lastMousePosX = mousePos.x;
@@ -159,14 +159,15 @@ void DMARender::RenderWindow::drawMapHandler()
     fgDrawList->AddImage(
         allocator->getImage(),
         ImVec2(
-            rect.left + dragOffsetX,
-            rect.top + dragOffsetY
+            rect.left + mTrans.dragOffsetX,
+            rect.top + mTrans.dragOffsetY
         ),
         ImVec2(
-            rect.left + dragOffsetX + (allocator->getWidth() * mapZoom),
-            rect.top + dragOffsetY + (allocator->getHeight() * mapZoom)
+            rect.left + mTrans.dragOffsetX + (allocator->getWidth() * mTrans.mapZoom),
+            rect.top + mTrans.dragOffsetY + (allocator->getHeight() * mTrans.mapZoom)
         )
     );
+    this->bridge->getRadar()->DrawOverlay(bridge->getMapManager()->getSelectedGameMap().get(), mTrans);
     
 }
 

@@ -6,6 +6,7 @@
 #include "../ImageAllocator/ImageAllocator.h"
 #include "../IOverlay/IOverlay.h"
 #include "RenderBridge/RenderBridge.h"
+#include "MapTransform.h"
 #include <d3d11.h>
 #include <tchar.h>
 #include <string>

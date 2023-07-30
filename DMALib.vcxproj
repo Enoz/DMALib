@@ -168,6 +168,8 @@
     <ClInclude Include="includes\DMAMemoryManagement\Utils\Utils.h" />
     <ClInclude Include="includes\DMAMemoryManagement\VmmManager\VmmManager.h" />
     <ClInclude Include="includes\DMARender\IGameMap\IGameMap.h" />
+    <ClInclude Include="includes\DMARender\IRadar\IRadar.h" />
+    <ClInclude Include="includes\DMARender\RenderWindow\MapTransform.h" />
     <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\MapManager\MapManager.h" />
     <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.h" />
     <ClInclude Include="includes\DMARender\RenderWindow\RenderWindow.h" />
@@ -194,6 +196,7 @@
     <ClCompile Include="includes\DMAMemoryManagement\Utils\Utils.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\VmmManager\VmmManager.cpp" />
     <ClCompile Include="includes\DMARender\IGameMap\IGameMap.cpp" />
+    <ClCompile Include="includes\DMARender\IRadar\IRadar.cpp" />
     <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\MapManager\MapManager.cpp" />
     <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.cpp" />
     <ClCompile Include="includes\DMARender\RenderWindow\RenderWindow.cpp" />
