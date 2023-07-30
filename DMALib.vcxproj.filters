@@ -87,9 +87,6 @@
     <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="includes\DMARender\Utils\RenderUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="includes\DMARender\ImageAllocator\ImageAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -159,9 +156,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="includes\DMARender\Utils\RenderUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="includes\DMARender\ImageAllocator\ImageAllocator.cpp">

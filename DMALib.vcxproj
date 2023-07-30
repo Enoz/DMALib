@@ -177,7 +177,6 @@
     <ClInclude Include="includes\DMARender\ImageAllocator\stb_image.h" />
     <ClInclude Include="includes\DMARender\includes.h" />
     <ClInclude Include="includes\DMARender\IOverlay\IOverlay.h" />
-    <ClInclude Include="includes\DMARender\Utils\RenderUtils.h" />
     <ClInclude Include="includes\DMARender\Vectors\Vector2.h" />
     <ClInclude Include="includes\DMARender\Vectors\Vector3.h" />
   </ItemGroup>
@@ -202,7 +201,6 @@
     <ClCompile Include="includes\DMARender\RenderWindow\RenderWindow.cpp" />
     <ClCompile Include="includes\DMARender\ImageAllocator\ImageAllocator.cpp" />
     <ClCompile Include="includes\DMARender\IOverlay\IOverlay.cpp" />
-    <ClCompile Include="includes\DMARender\Utils\RenderUtils.cpp" />
     <ClCompile Include="includes\DMARender\Vectors\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
