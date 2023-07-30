@@ -79,7 +79,7 @@ void DMARender::RenderWindow::drawMapHandler()
     static int map_current_index = 0;
     static float dragOffsetX = 0;
     static float dragOffsetY = 0;
-    static float mapZoom = 1;
+    static float mapZoom = .04;
     ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
     if (bridge->getMapManager()->isMapSelected()) {
         if (ImGui::Button("Stop Radar"))
@@ -109,19 +109,33 @@ void DMARender::RenderWindow::drawMapHandler()
     if (!gameMap || !allocator)
         return;
 
+    RECT rect;
+    GetWindowRect(hwnd, &rect);
+
     auto mousePos = ImGui::GetMousePos();
     static float lastMousePosX = mousePos.x;
     static float lastMousePosY = mousePos.y;
 
     if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && !ImGui::GetIO().WantCaptureMouse) {
-
         dragOffsetX += mousePos.x - lastMousePosX;
         dragOffsetY += mousePos.y - lastMousePosY;
     }
     if (ImGui::GetIO().MouseWheel != 0.0f) {
+        float oldZoom = mapZoom;
+        //Zoom in/out
         mapZoom += ImGui::GetIO().MouseWheel * .01;
         if (mapZoom < 0.01)
             mapZoom = 0.01;
+
+        //Zoom toward cursor
+        float deltaX = (allocator->getWidth() * oldZoom) - (allocator->getWidth() * mapZoom);
+        float deltaY = (allocator->getHeight() * oldZoom) - (allocator->getHeight() * mapZoom);
+
+        float percX = (mousePos.x - rect.left - dragOffsetX) / ((allocator->getWidth() * mapZoom));
+        float percY = (mousePos.y - rect.top - dragOffsetY) / ((allocator->getHeight() * mapZoom));
+
+        dragOffsetX += (deltaX * percX);
+        dragOffsetY += (deltaY * percY);
     }
 
     lastMousePosX = mousePos.x;
@@ -130,10 +144,6 @@ void DMARender::RenderWindow::drawMapHandler()
 
 
     ImDrawList* fgDrawList = ImGui::GetBackgroundDrawList();
-    auto sP = ImGui::GetCursorScreenPos();
-    RECT rect;
-    GetWindowRect(hwnd, &rect);
-    allocator->getWidth() * mapZoom;
     fgDrawList->AddImage(
         allocator->getImage(),
         ImVec2(
