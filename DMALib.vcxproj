@@ -167,8 +167,10 @@
     <ClInclude Include="includes\DMAMemoryManagement\StaticManager\StaticManager.h" />
     <ClInclude Include="includes\DMAMemoryManagement\Utils\Utils.h" />
     <ClInclude Include="includes\DMAMemoryManagement\VmmManager\VmmManager.h" />
-    <ClInclude Include="includes\DMARender\Commander\Adapter\CommanderAdapter.h" />
-    <ClInclude Include="includes\DMARender\Commander\Commander.h" />
+    <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.h" />
+    <ClInclude Include="includes\DMARender\RenderWindow\RenderWindow.h" />
+    <ClInclude Include="includes\DMARender\ImageAllocator\ImageAllocator.h" />
+    <ClInclude Include="includes\DMARender\ImageAllocator\stb_image.h" />
     <ClInclude Include="includes\DMARender\includes.h" />
     <ClInclude Include="includes\DMARender\IOverlay\IOverlay.h" />
     <ClInclude Include="includes\DMARender\Utils\RenderUtils.h" />
@@ -189,8 +191,9 @@
     <ClCompile Include="includes\DMAMemoryManagement\StaticManager\StaticManager.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\Utils\Utils.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\VmmManager\VmmManager.cpp" />
-    <ClCompile Include="includes\DMARender\Commander\Adapter\CommanderAdapter.cpp" />
-    <ClCompile Include="includes\DMARender\Commander\Commander.cpp" />
+    <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.cpp" />
+    <ClCompile Include="includes\DMARender\RenderWindow\RenderWindow.cpp" />
+    <ClCompile Include="includes\DMARender\ImageAllocator\ImageAllocator.cpp" />
     <ClCompile Include="includes\DMARender\IOverlay\IOverlay.cpp" />
     <ClCompile Include="includes\DMARender\Utils\RenderUtils.cpp" />
     <ClCompile Include="includes\DMARender\Vectors\Vector3.cpp" />

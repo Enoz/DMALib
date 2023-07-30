@@ -1,8 +1,8 @@
-#include "Commander.h"
+#include "RenderWindow.h"
 
-std::map<HWND, DMARender::Commander*> DMARender::hwndMap = std::map<HWND, DMARender::Commander*>();
+std::map<HWND, DMARender::RenderWindow*> DMARender::hwndMap = std::map<HWND, DMARender::RenderWindow*>();
 
-void DMARender::Commander::drawOverlayHandler()
+void DMARender::RenderWindow::drawOverlayHandler()
 {
     static bool identifyWindows = false;
     static bool overlayEnabled = false;
@@ -64,17 +64,23 @@ void DMARender::Commander::drawOverlayHandler()
         ImGui::SetNextWindowSize(ImVec2(selectedMonitor.MainSize.x, selectedMonitor.MainSize.y));
         ImGui::SetNextWindowPos((ImVec2(selectedMonitor.MainPos.x, selectedMonitor.MainPos.y)));
         ImGui::Begin("ESP Overlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
-        this->adapter->getOverlay()->DrawOverlay();
+        this->bridge->getOverlay()->DrawOverlay();
         ImGui::End();
     }
 }
 
-DMARender::Commander::Commander()
+DMARender::RenderWindow::RenderWindow()
 {
-    this->registerAdapter(std::shared_ptr<CommanderAdapter>(new CommanderAdapter));
+    this->bridge = std::shared_ptr<RenderBridge>(new RenderBridge);
 }
 
-void DMARender::Commander::initializeWindow()
+void DMARender::RenderWindow::_setResizeParams(UINT width, UINT height)
+{
+    this->g_ResizeWidth = width;
+    this->g_ResizeHeight = height;
+}
+
+void DMARender::RenderWindow::initializeWindow()
 {
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
@@ -100,7 +106,7 @@ void DMARender::Commander::initializeWindow()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     CreateFonts();
-    this->adapter->createFonts();
+    this->bridge->createFonts();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -129,6 +135,9 @@ void DMARender::Commander::initializeWindow()
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
+
+    testAllocator = new ImageAllocator(g_pd3dDevice, "D:\\reverse-projects\\DayZ\\maps\\chernarusplus\\layers\\map.png");
+
 
     // Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
@@ -182,8 +191,27 @@ void DMARender::Commander::initializeWindow()
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        if (this->adapter != nullptr) {
-            if (this->adapter->getOverlay() != nullptr) {
+        //ImGui::Begin("DirectX11 Texture Test");
+        //testAllocator->getImage();
+        //ImGui::Text("size = %d x %d", testAllocator->getWidth(), testAllocator->getHeight());
+        //ImGui::Image((void*)testAllocator->getImage(), ImVec2(testAllocator->getWidth(), testAllocator->getHeight()));
+        //ImGui::End();
+
+        testAllocator->getImage();
+        ImDrawList* fgDrawList = ImGui::GetBackgroundDrawList();
+        auto sP = ImGui::GetCursorScreenPos();
+        RECT rect;
+        GetWindowRect(hwnd, &rect);
+        
+        fgDrawList->AddImage(testAllocator->getImage(), ImVec2(rect.left, rect.top), ImVec2(rect.left + 1000, rect.top + 1000));
+
+        ImGui::Begin("Testing");
+        ImGui::Text(std::to_string(sP.x).c_str());
+        ImGui::Text(std::to_string(sP.y).c_str());
+        ImGui::End();
+
+        if (this->bridge != nullptr) {
+            if (this->bridge->getOverlay() != nullptr) {
                 drawOverlayHandler();
             }
         }
@@ -259,18 +287,13 @@ void DMARender::Commander::initializeWindow()
     return;
 }
 
-std::shared_ptr<DMARender::CommanderAdapter> DMARender::Commander::getAdapter()
+std::shared_ptr<DMARender::RenderBridge> DMARender::RenderWindow::getBridge()
 {
-    return this->adapter;
-}
-
-void DMARender::Commander::registerAdapter(std::shared_ptr<CommanderAdapter> adapter)
-{
-    this->adapter = adapter;
+    return this->bridge;
 }
 
 // Helper functions
-bool DMARender::Commander::CreateDeviceD3D(HWND hWnd)
+bool DMARender::RenderWindow::CreateDeviceD3D(HWND hWnd)
 {
     // Setup swap chain
     DXGI_SWAP_CHAIN_DESC sd;
@@ -303,7 +326,7 @@ bool DMARender::Commander::CreateDeviceD3D(HWND hWnd)
     return true;
 }
 
-void DMARender::Commander::CleanupDeviceD3D()
+void DMARender::RenderWindow::CleanupDeviceD3D()
 {
     CleanupRenderTarget();
     if (g_pSwapChain) { g_pSwapChain->Release(); g_pSwapChain = nullptr; }
@@ -311,7 +334,7 @@ void DMARender::Commander::CleanupDeviceD3D()
     if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = nullptr; }
 }
 
-void DMARender::Commander::CreateRenderTarget()
+void DMARender::RenderWindow::CreateRenderTarget()
 {
     ID3D11Texture2D* pBackBuffer;
     g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
@@ -322,12 +345,12 @@ void DMARender::Commander::CreateRenderTarget()
 
 }
 
-void DMARender::Commander::CleanupRenderTarget()
+void DMARender::RenderWindow::CleanupRenderTarget()
 {
     if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
 }
 
-void DMARender::Commander::CreateFonts()
+void DMARender::RenderWindow::CreateFonts()
 {
     ImGui::GetIO().Fonts->AddFontDefault();
     ImFontConfig config;
@@ -360,9 +383,8 @@ LRESULT WINAPI DMARender::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPa
     {
         if (wParam == SIZE_MINIMIZED)
             return 0;
-        Commander* cmdPtr = DMARender::hwndMap[hWnd];
-        cmdPtr->g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
-        cmdPtr->g_ResizeHeight = (UINT)HIWORD(lParam);
+        RenderWindow* rndPtr = DMARender::hwndMap[hWnd];
+        rndPtr->_setResizeParams((UINT)LOWORD(lParam), (UINT)HIWORD(lParam)); // Queue resize
         return 0;
     }
     case WM_SYSCOMMAND:

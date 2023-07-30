@@ -3,8 +3,9 @@
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_stdlib.h"
+#include "../ImageAllocator/ImageAllocator.h"
 #include "../IOverlay/IOverlay.h"
-#include "Adapter/CommanderAdapter.h"
+#include "RenderBridge/RenderBridge.h"
 #include <d3d11.h>
 #include <tchar.h>
 #include <string>
@@ -15,10 +16,11 @@
 
 
 namespace DMARender {
-    class Commander;
-    extern std::map<HWND, Commander*> hwndMap;
+    class RenderWindow;
+    extern std::map<HWND, RenderWindow*> hwndMap;
     LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-    class Commander {
+    class RenderWindow {
+        //WindowCreation
         ID3D11Device*           g_pd3dDevice = nullptr;
         ID3D11DeviceContext*    g_pd3dDeviceContext = nullptr;
         IDXGISwapChain*         g_pSwapChain = nullptr;
@@ -29,21 +31,21 @@ namespace DMARender {
         void CleanupRenderTarget();
         void CreateFonts();
 
-        std::shared_ptr<CommanderAdapter> adapter = nullptr;
+        std::shared_ptr<RenderBridge> bridge = nullptr;
+        ImageAllocator* testAllocator;
 
         //Fonts
         ImFont* windowIdentifyFont;
 
         void drawOverlayHandler();
-
-    public:
-        Commander();
         UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
+    public:
+        RenderWindow();
+        void _setResizeParams(UINT width, UINT height);
         void initializeWindow();
         
-        //Registrations
-        std::shared_ptr<CommanderAdapter> getAdapter();
-        void registerAdapter(std::shared_ptr<CommanderAdapter> adapter);
+        //Adapter
+        std::shared_ptr<RenderBridge> getBridge();
     };
 
 

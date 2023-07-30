@@ -69,7 +69,7 @@
     <ClInclude Include="includes\DMARender\includes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="includes\DMARender\Commander\Commander.h">
+    <ClInclude Include="includes\DMARender\RenderWindow\RenderWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h">
@@ -84,10 +84,16 @@
     <ClInclude Include="includes\DMARender\Vectors\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="includes\DMARender\Commander\Adapter\CommanderAdapter.h">
+    <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="includes\DMARender\Utils\RenderUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DMARender\ImageAllocator\ImageAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DMARender\ImageAllocator\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -128,7 +134,7 @@
     <ClCompile Include="imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="includes\DMARender\Commander\Commander.cpp">
+    <ClCompile Include="includes\DMARender\RenderWindow\RenderWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp">
@@ -140,10 +146,13 @@
     <ClCompile Include="includes\DMARender\Vectors\Vector3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="includes\DMARender\Commander\Adapter\CommanderAdapter.cpp">
+    <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="includes\DMARender\Utils\RenderUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\DMARender\ImageAllocator\ImageAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
