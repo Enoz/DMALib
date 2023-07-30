@@ -167,6 +167,8 @@
     <ClInclude Include="includes\DMAMemoryManagement\StaticManager\StaticManager.h" />
     <ClInclude Include="includes\DMAMemoryManagement\Utils\Utils.h" />
     <ClInclude Include="includes\DMAMemoryManagement\VmmManager\VmmManager.h" />
+    <ClInclude Include="includes\DMARender\IGameMap\IGameMap.h" />
+    <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\MapManager\MapManager.h" />
     <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.h" />
     <ClInclude Include="includes\DMARender\RenderWindow\RenderWindow.h" />
     <ClInclude Include="includes\DMARender\ImageAllocator\ImageAllocator.h" />
@@ -191,6 +193,8 @@
     <ClCompile Include="includes\DMAMemoryManagement\StaticManager\StaticManager.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\Utils\Utils.cpp" />
     <ClCompile Include="includes\DMAMemoryManagement\VmmManager\VmmManager.cpp" />
+    <ClCompile Include="includes\DMARender\IGameMap\IGameMap.cpp" />
+    <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\MapManager\MapManager.cpp" />
     <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\RenderBridge.cpp" />
     <ClCompile Include="includes\DMARender\RenderWindow\RenderWindow.cpp" />
     <ClCompile Include="includes\DMARender\ImageAllocator\ImageAllocator.cpp" />

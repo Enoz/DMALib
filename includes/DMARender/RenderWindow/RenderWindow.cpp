@@ -71,7 +71,8 @@ void DMARender::RenderWindow::drawOverlayHandler()
 
 DMARender::RenderWindow::RenderWindow()
 {
-    this->bridge = std::shared_ptr<RenderBridge>(new RenderBridge);
+    g_pd3dDevicePtr = new ID3D11Device*;
+    this->bridge = std::shared_ptr<RenderBridge>(new RenderBridge(g_pd3dDevicePtr));
 }
 
 void DMARender::RenderWindow::_setResizeParams(UINT width, UINT height)
@@ -135,7 +136,7 @@ void DMARender::RenderWindow::initializeWindow()
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
-
+    *g_pd3dDevicePtr = g_pd3dDevice;
     testAllocator = new ImageAllocator(g_pd3dDevice, "D:\\reverse-projects\\DayZ\\maps\\chernarusplus\\layers\\map.png");
 
 
@@ -197,17 +198,18 @@ void DMARender::RenderWindow::initializeWindow()
         //ImGui::Image((void*)testAllocator->getImage(), ImVec2(testAllocator->getWidth(), testAllocator->getHeight()));
         //ImGui::End();
 
-        testAllocator->getImage();
-        ImDrawList* fgDrawList = ImGui::GetBackgroundDrawList();
-        auto sP = ImGui::GetCursorScreenPos();
-        RECT rect;
-        GetWindowRect(hwnd, &rect);
-        
-        fgDrawList->AddImage(testAllocator->getImage(), ImVec2(rect.left, rect.top), ImVec2(rect.left + 1000, rect.top + 1000));
+        //testAllocator->getImage();
+        //ImDrawList* fgDrawList = ImGui::GetBackgroundDrawList();
+        //auto sP = ImGui::GetCursorScreenPos();
+        //RECT rect;
+        //GetWindowRect(hwnd, &rect);
+        //
+        //fgDrawList->AddImage(testAllocator->getImage(), ImVec2(rect.left, rect.top), ImVec2(rect.left + 1000, rect.top + 1000));
 
         ImGui::Begin("Testing");
-        ImGui::Text(std::to_string(sP.x).c_str());
-        ImGui::Text(std::to_string(sP.y).c_str());
+        for (const auto& mp : bridge->getMapManager()->getMaps()) {
+            ImGui::Text("%s - %s", mp->getName().c_str(), mp->getFilePath().c_str());
+        }
         ImGui::End();
 
         if (this->bridge != nullptr) {

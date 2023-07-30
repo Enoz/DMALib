@@ -62,6 +62,11 @@ DMARender::ImageAllocator::ImageAllocator(ID3D11Device* g_pd3dDevice, std::strin
     this->g_pd3dDevice = g_pd3dDevice;
 }
 
+DMARender::ImageAllocator::~ImageAllocator()
+{
+    freeImage();
+}
+
 ID3D11ShaderResourceView* DMARender::ImageAllocator::getImage()
 {
     if (texture == nullptr) {

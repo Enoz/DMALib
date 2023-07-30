@@ -4,5 +4,8 @@
 #include "Vectors/Vector2.h"
 #include "Vectors/Vector3.h"
 #include "IOverlay/IOverlay.h"
+#include "IGameMap/IGameMap.h"
 #include "Utils/RenderUtils.h"
 #include "ImageAllocator/ImageAllocator.h"
+#include "RenderWindow/RenderBridge/RenderBridge.h"
+#include "RenderWindow/RenderBridge/MapManager/MapManager.h"

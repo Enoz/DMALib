@@ -96,6 +96,12 @@
     <ClInclude Include="includes\DMARender\ImageAllocator\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="includes\DMARender\IGameMap\IGameMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\DMARender\RenderWindow\RenderBridge\MapManager\MapManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DMALib.cpp">
@@ -153,6 +159,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="includes\DMARender\ImageAllocator\ImageAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\DMARender\IGameMap\IGameMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\DMARender\RenderWindow\RenderBridge\MapManager\MapManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

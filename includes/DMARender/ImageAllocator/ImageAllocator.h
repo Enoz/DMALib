@@ -14,6 +14,7 @@ namespace DMARender {
 		bool loadImage();
 	public:
 		ImageAllocator(ID3D11Device* g_pd3dDevice, std::string filePath);
+		~ImageAllocator();
 		ID3D11ShaderResourceView* getImage();
 		int getWidth();
 		int getHeight();
