@@ -79,7 +79,7 @@ void DMARender::RenderWindow::drawMapHandler()
     static int map_current_index = 0;
     static float dragOffsetX = 0;
     static float dragOffsetY = 0;
-    static float mapZoom = .04;
+    static float mapZoom = -1;
     ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
     if (bridge->getMapManager()->isMapSelected()) {
         if (ImGui::Button("Stop Radar"))
@@ -96,8 +96,13 @@ void DMARender::RenderWindow::drawMapHandler()
 
             ImGui::EndCombo();
         }
-        if (ImGui::Button("Start Radar"))
+        if (ImGui::Button("Start Radar")) {
+            mapZoom = -1;
+            dragOffsetX = 0;
+            dragOffsetY = 0;
             bridge->getMapManager()->selectMap(map_current_index);
+        }
+
     }
     ImGui::End();
 
@@ -111,6 +116,13 @@ void DMARender::RenderWindow::drawMapHandler()
 
     RECT rect;
     GetWindowRect(hwnd, &rect);
+
+
+    if (mapZoom < 0) {
+        float mapSize = fmaxf(allocator->getWidth(), allocator->getHeight());
+        float screenSize = fminf(rect.right - rect.left, rect.bottom - rect.top);
+        mapZoom = screenSize / mapSize;
+    }
 
     auto mousePos = ImGui::GetMousePos();
     static float lastMousePosX = mousePos.x;

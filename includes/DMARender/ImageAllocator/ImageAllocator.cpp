@@ -79,7 +79,8 @@ ID3D11ShaderResourceView* DMARender::ImageAllocator::getImage()
 int DMARender::ImageAllocator::getWidth()
 {
     if (texture == nullptr)
-        return 0;
+        if(!loadImage())
+            return 0;
     return image_width;
 }
 
@@ -87,7 +88,8 @@ int DMARender::ImageAllocator::getWidth()
 int DMARender::ImageAllocator::getHeight()
 {
     if (texture == nullptr)
-        return 0;
+        if(!loadImage())
+            return 0;
     return image_height;
 }
 
