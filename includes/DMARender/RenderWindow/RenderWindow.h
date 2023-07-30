@@ -21,6 +21,7 @@ namespace DMARender {
     LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     class RenderWindow {
         //WindowCreation
+        HWND hwnd;
         ID3D11Device*           g_pd3dDevice = nullptr;
         ID3D11Device**          g_pd3dDevicePtr = nullptr;
         ID3D11DeviceContext*    g_pd3dDeviceContext = nullptr;
@@ -33,12 +34,12 @@ namespace DMARender {
         void CreateFonts();
 
         std::shared_ptr<RenderBridge> bridge = nullptr;
-        ImageAllocator* testAllocator;
 
         //Fonts
         ImFont* windowIdentifyFont;
 
         void drawOverlayHandler();
+        void drawMapHandler();
         UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
     public:
         RenderWindow();

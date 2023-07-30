@@ -69,6 +69,51 @@ void DMARender::RenderWindow::drawOverlayHandler()
     }
 }
 
+void DMARender::RenderWindow::drawMapHandler()
+{
+    
+    //Map Selection
+    auto maps = bridge->getMapManager()->getMaps();
+    if (maps.size() == 0)
+        return;
+    static int map_current_index = 0;
+    ImGui::Begin("Radar", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
+    if (bridge->getMapManager()->isMapSelected()) {
+        if (ImGui::Button("Stop Radar"))
+            bridge->getMapManager()->clearMap();
+    }
+    else {
+        auto previewString = maps[map_current_index]->getName();
+        if (ImGui::BeginCombo("Selected Map", previewString.c_str())) {
+            for (int i = 0; i < maps.size(); i++) {
+                bool isSelected = i == map_current_index;
+                if (ImGui::Selectable(maps[i]->getName().c_str(), isSelected))
+                    map_current_index = i;
+            }
+
+            ImGui::EndCombo();
+        }
+        if (ImGui::Button("Start Radar"))
+            bridge->getMapManager()->selectMap(map_current_index);
+    }
+    ImGui::End();
+
+    //Radar Logic
+    if (!bridge->getMapManager()->isMapSelected())
+        return;
+    auto gameMap = bridge->getMapManager()->getSelectedGameMap();
+    auto allocator = bridge->getMapManager()->getSelectedAllocator();
+    if (!gameMap || !allocator)
+        return;
+    ImDrawList* fgDrawList = ImGui::GetBackgroundDrawList();
+    auto sP = ImGui::GetCursorScreenPos();
+    RECT rect;
+    GetWindowRect(hwnd, &rect);
+        
+    fgDrawList->AddImage(allocator->getImage(), ImVec2(rect.left, rect.top), ImVec2(rect.left + 1000, rect.top + 1000));
+    
+}
+
 DMARender::RenderWindow::RenderWindow()
 {
     g_pd3dDevicePtr = new ID3D11Device*;
@@ -88,7 +133,7 @@ void DMARender::RenderWindow::initializeWindow()
 
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, DMARender::WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
     ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"DMA Commander",  WS_OVERLAPPEDWINDOW , 0, 0, 1280, 720, nullptr, nullptr, wc.hInstance, nullptr);
+    hwnd = ::CreateWindowW(wc.lpszClassName, L"DMA Commander",  WS_OVERLAPPEDWINDOW , 0, 0, 1280, 720, nullptr, nullptr, wc.hInstance, nullptr);
     DMARender::hwndMap[hwnd] = this;
 
     // Initialize Direct3D
@@ -137,7 +182,6 @@ void DMARender::RenderWindow::initializeWindow()
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
     *g_pd3dDevicePtr = g_pd3dDevice;
-    testAllocator = new ImageAllocator(g_pd3dDevice, "D:\\reverse-projects\\DayZ\\maps\\chernarusplus\\layers\\map.png");
 
 
     // Load Fonts
@@ -192,73 +236,12 @@ void DMARender::RenderWindow::initializeWindow()
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        //ImGui::Begin("DirectX11 Texture Test");
-        //testAllocator->getImage();
-        //ImGui::Text("size = %d x %d", testAllocator->getWidth(), testAllocator->getHeight());
-        //ImGui::Image((void*)testAllocator->getImage(), ImVec2(testAllocator->getWidth(), testAllocator->getHeight()));
-        //ImGui::End();
-
-        //testAllocator->getImage();
-        //ImDrawList* fgDrawList = ImGui::GetBackgroundDrawList();
-        //auto sP = ImGui::GetCursorScreenPos();
-        //RECT rect;
-        //GetWindowRect(hwnd, &rect);
-        //
-        //fgDrawList->AddImage(testAllocator->getImage(), ImVec2(rect.left, rect.top), ImVec2(rect.left + 1000, rect.top + 1000));
-
-        ImGui::Begin("Testing");
-        for (const auto& mp : bridge->getMapManager()->getMaps()) {
-            ImGui::Text("%s - %s", mp->getName().c_str(), mp->getFilePath().c_str());
-        }
-        ImGui::End();
-
         if (this->bridge != nullptr) {
+            drawMapHandler();
             if (this->bridge->getOverlay() != nullptr) {
                 drawOverlayHandler();
             }
         }
-
-        //// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        //if (show_demo_window)
-        //    ImGui::ShowDemoWindow(&show_demo_window);
-
-        //// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        //{
-        //    static float f = 0.0f;
-        //    static int counter = 0;
-
-        //    ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-        //    ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        //    ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-        //    ImGui::Checkbox("Another Window", &show_another_window);
-
-        //    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        //    ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-        //    if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-        //        counter++;
-        //    ImGui::SameLine();
-        //    ImGui::Text("counter = %d", counter);
-
-        //    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-        //    ImGui::End();
-        //}
-
-        //// 3. Show another simple window.
-        //if (show_another_window)
-        //{
-        //    ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        //    
-        //    auto pDraw = ImGui::GetWindowDrawList();
-        //    auto p = ImGui::GetCursorScreenPos();
-        //    pDraw->AddRectFilled(ImVec2(p.x + 10, p.y + 10), ImVec2(p.x + 200, p.y + 200), IM_COL32(255, 0, 0, 255));
-
-        //    ImGui::Text("Hello from another window!");
-        //    if (ImGui::Button("Close Me"))
-        //        show_another_window = false;
-        //    ImGui::End();
-        //}
 
         // Rendering
         ImGui::Render();

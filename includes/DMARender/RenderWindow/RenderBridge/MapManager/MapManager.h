@@ -15,6 +15,8 @@ namespace DMARender {
 		std::vector<std::shared_ptr<IGameMap>> getMaps();
 		void selectMap(int index);
 		void clearMap();
+		std::shared_ptr<IGameMap> getSelectedGameMap();
+		bool isMapSelected();
 		std::shared_ptr<ImageAllocator> getSelectedAllocator();
 	};
 }

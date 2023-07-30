@@ -33,6 +33,18 @@ void DMARender::MapManager::clearMap()
 	this->img = nullptr;
 }
 
+std::shared_ptr<DMARender::IGameMap> DMARender::MapManager::getSelectedGameMap()
+{
+	if (!isMapSelected())
+		return nullptr;
+	return maps[selectedIndex];
+}
+
+bool DMARender::MapManager::isMapSelected()
+{
+	return selectedIndex >= 0;
+}
+
 std::shared_ptr<DMARender::ImageAllocator> DMARender::MapManager::getSelectedAllocator()
 {
 	return img;
