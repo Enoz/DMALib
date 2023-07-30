@@ -11,6 +11,9 @@ void DMARender::RenderBridge::createFonts()
 	if (this->getOverlay()) {
 		this->getOverlay()->createFonts();
 	}
+	if (this->getRadar()) {
+		this->getRadar()->createFonts();
+	}
 }
 
 void DMARender::RenderBridge::setOverlay(std::shared_ptr<IOverlay> ptr)
