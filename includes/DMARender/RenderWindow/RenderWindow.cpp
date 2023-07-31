@@ -135,7 +135,7 @@ void DMARender::RenderWindow::drawMapHandler()
     if (ImGui::GetIO().MouseWheel != 0.0f) {
         float oldZoom = mTrans.mapZoom;
         //Zoom in/out
-        mTrans.mapZoom += ImGui::GetIO().MouseWheel * .01;
+        mTrans.mapZoom *= (1 + (ImGui::GetIO().MouseWheel * .05));
         if (mTrans.mapZoom < 0.01)
             mTrans.mapZoom = 0.01;
 
