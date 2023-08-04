@@ -7,6 +7,7 @@ void DMAMem::MemoryObject::registerOffset(int offset, void* destination, int typ
 	oe.destination = destination;
 	oe.typeSize = typeSize;
 	offsetVector.push_back(oe);
+	_isBaseResolved = false;
 }
 
 void DMAMem::MemoryObject::registerPointer(int offset, MemoryObject* destination)
@@ -16,19 +17,16 @@ void DMAMem::MemoryObject::registerPointer(int offset, MemoryObject* destination
 	op->destination = destination;
 	op->resolvedAddress = NULL;
 	pointerVector.push_back(op);
+	_isBaseResolved = false;
 }
 
 std::vector<DMAMem::MemoryObject::ResolutionRequest> DMAMem::MemoryObject::getRequestedResolutions(QWORD baseAddress)
-{
-	return generateDefaultResolutions(baseAddress);
-}
-
-std::vector<DMAMem::MemoryObject::ResolutionRequest> DMAMem::MemoryObject::generateDefaultResolutions(QWORD baseAddress)
 {
 	std::vector<ResolutionRequest> requestVec;
 	if (baseAddress == NULL)
 		return requestVec;
 	_remoteAddress = baseAddress;
+	//Resolve Base
 	if (!_isBaseResolved) {
 		for (const auto offEntry : offsetVector) {
 			ResolutionRequest resReq;
@@ -44,17 +42,10 @@ std::vector<DMAMem::MemoryObject::ResolutionRequest> DMAMem::MemoryObject::gener
 			resReq.size = GAME_POINTER_SIZE;
 			requestVec.push_back(resReq);
 		}
+		_isBaseResolved = true;
+		return requestVec;
 	}
-	else {
-		for (const auto ptrEntry : pointerVector) {
-			auto ptrResolutions = ptrEntry->destination->getRequestedResolutions(ptrEntry->resolvedAddress);
-			if (ptrResolutions.size() > 0) {
-				DMAUtils::concatVectors<ResolutionRequest>(&requestVec, &ptrResolutions);
-			}
-		}
-	}
-	_isBaseResolved = true;
-	return requestVec;
+	return postResolveResolutions();
 }
 
 void DMAMem::MemoryObject::readResolutions(VmmManager* manager, DWORD pid, std::vector<ResolutionRequest> resolutionRequests, ULONG64 flags)
@@ -66,6 +57,22 @@ void DMAMem::MemoryObject::readResolutions(VmmManager* manager, DWORD pid, std::
 	manager->executeScatter(scatterHandle);
 }
 
+std::vector<DMAMem::MemoryObject::ResolutionRequest> DMAMem::MemoryObject::getPointerResolutions()
+{
+	std::vector<ResolutionRequest> requestVec;
+	for (const auto ptrEntry : pointerVector) {
+		auto ptrResolutions = ptrEntry->destination->getRequestedResolutions(ptrEntry->resolvedAddress);
+		if (ptrResolutions.size() > 0) {
+			DMAUtils::concatVectors<ResolutionRequest>(&requestVec, &ptrResolutions);
+		}
+	}
+	return requestVec;
+}
+
+std::vector<DMAMem::MemoryObject::ResolutionRequest> DMAMem::MemoryObject::postResolveResolutions()
+{
+	return getPointerResolutions();
+}
 
 
 void DMAMem::MemoryObject::resolveObject(VmmManager* manager, DWORD pid, QWORD address, ULONG64 flags)

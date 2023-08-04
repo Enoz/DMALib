@@ -17,35 +17,36 @@ namespace DMAMem {
 			this->registerPointer(NULL, (MemoryObject*)ptr.get());
 		}
 
-		std::vector<DMAMem::MemoryObject::ResolutionRequest> getRequestedResolutions(QWORD baseAddress) override {
 
-			if (offsetArray.size() == resolvedPointerArray.size()) {
-				MemoryObject* finalObj = ((MemoryObject*)ptr.get());
-				if (resolvedPointerArray.size() == 0) {
-					return finalObj->getRequestedResolutions(baseAddress);
-				}
-				return finalObj->getRequestedResolutions(*resolvedPointerArray.back());
-			}
+		//std::vector<DMAMem::MemoryObject::ResolutionRequest> getRequestedResolutions(QWORD baseAddress) override {
 
-			int curOffset = offsetArray[resolvedPointerArray.size()];
-			ResolutionRequest resReq;
-			
-			if (resolvedPointerArray.size() == 0) {
-				resReq.address = baseAddress + curOffset;
-			}
-			else {
-				resReq.address = *resolvedPointerArray.back() + curOffset;
-			}
+		//	if (offsetArray.size() == resolvedPointerArray.size()) {
+		//		MemoryObject* finalObj = ((MemoryObject*)ptr.get());
+		//		if (resolvedPointerArray.size() == 0) {
+		//			return finalObj->getRequestedResolutions(baseAddress);
+		//		}
+		//		return finalObj->getRequestedResolutions(*resolvedPointerArray.back());
+		//	}
 
-			//Destination
-			std::shared_ptr<QWORD> destination(new QWORD());
-			resReq.destination = destination.get();
-			resolvedPointerArray.push_back(destination);
+		//	int curOffset = offsetArray[resolvedPointerArray.size()];
+		//	ResolutionRequest resReq;
+		//	
+		//	if (resolvedPointerArray.size() == 0) {
+		//		resReq.address = baseAddress + curOffset;
+		//	}
+		//	else {
+		//		resReq.address = *resolvedPointerArray.back() + curOffset;
+		//	}
 
-			resReq.size = sizeof(QWORD);
-			std::vector<ResolutionRequest> retVec {resReq};
-			return retVec;
-		}
+		//	//Destination
+		//	std::shared_ptr<QWORD> destination(new QWORD());
+		//	resReq.destination = destination.get();
+		//	resolvedPointerArray.push_back(destination);
+
+		//	resReq.size = sizeof(QWORD);
+		//	std::vector<ResolutionRequest> retVec {resReq};
+		//	return retVec;
+		//}
 
 	};
 }

@@ -32,22 +32,21 @@ namespace DMAMem {
 
 		void registerOffset(int offset, void* destination, int typeSize);
 		void registerPointer(int offset, MemoryObject* destination);
+		std::vector<DMAMem::MemoryObject::ResolutionRequest> getPointerResolutions();
 
 		bool _isBaseResolved = false;
-
-
-		std::vector<DMAMem::MemoryObject::ResolutionRequest> generateDefaultResolutions(QWORD baseAddress);
+		virtual std::vector<DMAMem::MemoryObject::ResolutionRequest> postResolveResolutions();
 
 	private:
 		std::vector<OffsetEntry> offsetVector;
 		std::vector<std::shared_ptr<OffsetPointer>> pointerVector;
 		void readResolutions(VmmManager* manager, DWORD pid, std::vector<ResolutionRequest> resolutionRequests, ULONG64 flags);
-
+		
 
 
 	public:
 		GAME_POINTER_TYPE _remoteAddress = NULL;
 		void resolveObject(VmmManager* manager, DWORD pid, QWORD address, ULONG64 flags = VMMDLL_FLAG_NOCACHE);
-		virtual std::vector<DMAMem::MemoryObject::ResolutionRequest> getRequestedResolutions(QWORD baseAddress);
+		std::vector<DMAMem::MemoryObject::ResolutionRequest> getRequestedResolutions(QWORD baseAddress);
 	};
 }
