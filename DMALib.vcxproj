@@ -160,7 +160,6 @@
     <ClInclude Include="imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="includes\DMAMemoryManagement\includes.h" />
     <ClInclude Include="includes\DMAMemoryManagement\MemoryObject\MemoryObject.h" />
-    <ClInclude Include="includes\DMAMemoryManagement\MemoryObject\MemoryObjectSingle.h" />
     <ClInclude Include="includes\DMAMemoryManagement\MemoryObject\PointerChain.h" />
     <ClInclude Include="includes\DMAMemoryManagement\MemProcFS\leechcore.h" />
     <ClInclude Include="includes\DMAMemoryManagement\MemProcFS\vmmdll.h" />

@@ -36,9 +36,6 @@
     <ClInclude Include="includes\DMAMemoryManagement\MemoryObject\PointerChain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="includes\DMAMemoryManagement\MemoryObject\MemoryObjectSingle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="includes\DMAMemoryManagement\MemoryObject\MemoryObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
