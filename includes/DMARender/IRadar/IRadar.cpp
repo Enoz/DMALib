@@ -32,6 +32,14 @@ void DMARender::IRadar::drawBlip(const ImVec2& screenPos, const float& size, con
     }
 }
 
+void DMARender::IRadar::drawBlipDirectional(const ImVec2& screenPos, const float& size, const ImU32& color, float fontSize, float borderSize, const std::vector<std::string>& text, float direction)
+{
+    drawBlip(screenPos, size, color, fontSize, borderSize, text);
+    ImDrawList* bgDraw = ImGui::GetBackgroundDrawList();
+
+    bgDraw->AddLine(screenPos, ImVec2(screenPos.x + sinf(direction * (std::numbers::pi / 180.0f)) * 35, screenPos.y + cosf(direction * (std::numbers::pi / 180.0f)) * 35), IM_COL32_WHITE, 3.0f);
+}
+
 void DMARender::IRadar::drawOutlinedText(std::string text, const ImVec2& screenPos, const float& size, const ImU32& color)
 {
     ImDrawList* bgDraw = ImGui::GetBackgroundDrawList();
