@@ -43,9 +43,15 @@ std::vector<DMAMem::MemoryObject::ResolutionRequest> DMAMem::MemoryObject::getRe
 			requestVec.push_back(resReq);
 		}
 		_isBaseResolved = true;
-		return requestVec;
+		if(requestVec.size() > 0)
+			return requestVec;
 	}
 	return postResolveResolutions();
+}
+
+bool DMAMem::MemoryObject::isResolved()
+{
+	return _isBaseResolved;
 }
 
 void DMAMem::MemoryObject::readResolutions(VmmManager* manager, DWORD pid, std::vector<ResolutionRequest> resolutionRequests, ULONG64 flags)
